@@ -1,7 +1,8 @@
-import 'package:expense_131/screens/utils/my_styles.dart';
+
 import 'package:flutter/material.dart';
 
-import '../utils/image_constants.dart';
+import '../../utils/image_constants.dart';
+import '../../utils/my_styles.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -27,11 +28,11 @@ class _SplashPageState extends State<SplashPage> {
           children: [
             CircleAvatar(
               backgroundColor: Colors.black,
-              radius: mediaQueryData.size.width*0.05,
+              radius: mWidth*0.05,
               child: Image.asset(ImageConstants.appLogoIcon, color: Colors.grey.shade100, width: mediaQueryData.size.width*0.048, height: mediaQueryData.size.width*0.048,),
             ),
 
-            Text('Expenser', style: mediaQueryData.size.width>800 ? mTextStyle34(mWeight: FontWeight.bold) : mTextStyle25(mWeight: FontWeight.bold),)
+            Text('Expenser', style: mWidth>800 ? mTextStyle34(mWeight: FontWeight.bold) : mTextStyle25(mWeight: FontWeight.bold),)
           ],
         ),
       ),

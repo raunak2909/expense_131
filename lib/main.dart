@@ -1,4 +1,5 @@
 import 'package:expense_131/screens/splash/splash_page.dart';
+import 'package:expense_131/screens/user_onboarding/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashPage(),
+      home: LoginPage(),
     );
   }
 }
