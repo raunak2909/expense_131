@@ -1,9 +1,17 @@
+import 'package:expense_131/bloc/expense_bloc.dart';
+import 'package:expense_131/database_provider/app_database.dart';
+import 'package:expense_131/screens/add_trans/add_transaction_page.dart';
+import 'package:expense_131/screens/home/home_page.dart';
 import 'package:expense_131/screens/splash/splash_page.dart';
 import 'package:expense_131/screens/user_onboarding/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(BlocProvider(
+    create: (context) => ExpenseBloc(db: AppDataBase.db),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +22,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -34,8 +41,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      home: HomePage(),
     );
   }
 }
-

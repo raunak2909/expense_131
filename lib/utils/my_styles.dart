@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:expense_131/color_constant.dart';
+import 'package:expense_131/constants/color_constant.dart';
 import 'package:flutter/material.dart';
 
 ///spacers

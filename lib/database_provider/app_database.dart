@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:expense_131/models/expense_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AppDataBase {
@@ -92,8 +93,12 @@ class AppDataBase {
         where: "$USER_COLUMN_EMAIL = ? and $USER_COLUMN_PASS = ?",
         whereArgs: [email, pass]);
 
-    //shared pref
-    // set uid
+    if(data.isNotEmpty) {
+      //shared pref
+      // set uid
+      var pref = await SharedPreferences.getInstance();
+      pref.setInt("uid", int.parse(data[0][USER_COLUMN_ID].toString()));
+    }
     return data.isNotEmpty;
   }
 
@@ -107,11 +112,17 @@ class AppDataBase {
     return check>0;
   }
 
-  Future<List<ExpenseModel>> getAllExpensesOfUser(int uid) async{
+  Future<List<ExpenseModel>> getAllExpensesOfUser() async{
     var db = await getDB();
 
     //get uid via shared pref
     // get uid
+
+   /* var pref = await SharedPreferences.getInstance();
+    int? uid = pref.getInt("uid");*/
+
+    int uid = 1;
+
 
     List<Map<String, dynamic>> data = await db.query(EXPENSE_TABLE, where: "$USER_COLUMN_ID = ?", whereArgs: ["$uid"]);
 

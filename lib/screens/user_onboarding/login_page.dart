@@ -1,5 +1,5 @@
 import 'package:expense_131/app_widgets/app_rounded_button.dart';
-import 'package:expense_131/color_constant.dart';
+import 'package:expense_131/constants/color_constant.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/image_constants.dart';
