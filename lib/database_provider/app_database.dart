@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:expense_131/models/expense_model.dart';
+import 'package:expense_131/models/user_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,12 +63,12 @@ class AppDataBase {
   }
 
   //createAccount
-  Future<bool> createNewAccount(String email) async {
-    bool check = await checkIfEmailAlreadyExists(email);
+  Future<bool> createNewAccount(UserModel newUser) async {
+    bool check = await checkIfEmailAlreadyExists(newUser.email);
     var db = await getDB();
     if (!check) {
       //insert
-      var isInserted = await db.insert(USER_TABLE, {});
+      var isInserted = await db.insert(USER_TABLE, newUser.toMap());
       return isInserted > 0;
     } else {
       return false;
@@ -89,15 +90,14 @@ class AppDataBase {
   Future<bool> authenticateUser(String email, String pass) async {
     var db = await getDB();
 
-    var data = await db.query(USER_TABLE,
+    List<Map<String,dynamic>> data = await db.query(USER_TABLE,
         where: "$USER_COLUMN_EMAIL = ? and $USER_COLUMN_PASS = ?",
         whereArgs: [email, pass]);
 
     if(data.isNotEmpty) {
       //shared pref
       // set uid
-      var pref = await SharedPreferences.getInstance();
-      pref.setInt("uid", int.parse(data[0][USER_COLUMN_ID].toString()));
+
     }
     return data.isNotEmpty;
   }
