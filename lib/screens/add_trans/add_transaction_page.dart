@@ -56,7 +56,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           child: GridView.builder(
                               itemCount: AppConstants.categories.length,
                               gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 4),
                               itemBuilder: (_, index) {
                                 return InkWell(
