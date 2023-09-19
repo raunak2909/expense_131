@@ -1,6 +1,10 @@
 import 'package:expense_131/app_widgets/app_rounded_button.dart';
 import 'package:expense_131/constants/color_constant.dart';
+import 'package:expense_131/screens/home/home_page.dart';
+import 'package:expense_131/screens/user_onboarding/bloc/user_bloc.dart';
+import 'package:expense_131/screens/user_onboarding/sign_up_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../utils/image_constants.dart';
 import '../../utils/my_styles.dart';
@@ -13,6 +17,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  var emailController = TextEditingController();
+  var passController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     var mediaQueryData = MediaQuery.of(context);
@@ -35,11 +43,11 @@ class _LoginPageState extends State<LoginPage> {
     return mHeight > 334
         ? mainSubUI(mWidth, mHeight)
         : SingleChildScrollView(
-            child: mainSubUI(mWidth, mHeight),
-          );
+      child: mainSubUI(mWidth, mHeight),
+    );
   }
 
-  Widget mainSubUI(double mWidth, double mHeight){
+  Widget mainSubUI(double mWidth, double mHeight) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -66,12 +74,14 @@ class _LoginPageState extends State<LoginPage> {
         ),
         hSpacer(),
         TextField(
+            controller: emailController,
             decoration: myDecoration(
                 mPrefixIcon: Icons.email_outlined,
                 mLabel: "Email",
                 mHint: "Enter your Email..")),
         hSpacer(),
         TextField(
+            controller: passController,
             obscuringCharacter: "*",
             obscureText: true,
             decoration: myDecoration(
@@ -79,7 +89,35 @@ class _LoginPageState extends State<LoginPage> {
                 mLabel: "Password",
                 mHint: "Enter your Email..")),
         hSpacer(mHeight: 16),
-        AppRoundedButton(onTap: () {}, title: "Login")
+        BlocConsumer<UserBloc, UserState>(
+          listener: (context, state) {
+            if(state is UserSuccessState){
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('User Logged-in successfully!!')));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
+            } else if(state is UserFailState){
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.failMsg)));
+            }
+          },
+          builder: (_, state){
+            if(state is UserLoadingState){
+              return Center(child: CircularProgressIndicator(),);
+            }
+            return AppRoundedButton(onTap: () {
+              var email = emailController.text.toString();
+              var pass = passController.text.toString();
+
+              context.read<UserBloc>().add(
+                  LoginUserEvent(uname: email, pass: pass));
+            }, title: "Login",);
+          },
+        ),
+        InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage(),));
+          },
+            child: Text('Didn\'t have an account create now', style: mTextStyle16(),))
       ],
     );
   }
@@ -92,21 +130,21 @@ class _LoginPageState extends State<LoginPage> {
     return Row(
       children: [
         Expanded(
-          flex: 1,
+            flex: 1,
             child: Container(
-          child: Center(
-            child: CircleAvatar(
-              backgroundColor: Colors.black,
-              radius: mHeight * 0.1,
-              child: Image.asset(
-                ImageConstants.appLogoIcon,
-                color: Colors.grey.shade100,
-                width: mHeight * 0.09,
-                height: mHeight * 0.09,
+              child: Center(
+                child: CircleAvatar(
+                  backgroundColor: Colors.black,
+                  radius: mHeight * 0.1,
+                  child: Image.asset(
+                    ImageConstants.appLogoIcon,
+                    color: Colors.grey.shade100,
+                    width: mHeight * 0.09,
+                    height: mHeight * 0.09,
+                  ),
+                ),
               ),
-            ),
-          ),
-        )),
+            )),
         Expanded(flex: 2, child: LayoutBuilder(builder: (context, constraints) {
           var mWidth = constraints.maxWidth;
           var mHeight = constraints.maxHeight;

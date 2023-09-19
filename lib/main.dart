@@ -4,13 +4,17 @@ import 'package:expense_131/graph_page.dart';
 import 'package:expense_131/screens/add_trans/add_transaction_page.dart';
 import 'package:expense_131/screens/home/home_page.dart';
 import 'package:expense_131/screens/splash/splash_page.dart';
+import 'package:expense_131/screens/user_onboarding/bloc/user_bloc.dart';
 import 'package:expense_131/screens/user_onboarding/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(BlocProvider(
-    create: (context) => ExpenseBloc(db: AppDataBase.db),
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_)=> ExpenseBloc(db: AppDataBase.db)),
+      BlocProvider(create: (_)=> UserBloc(db: AppDataBase.db)),
+    ],
     child: const MyApp(),
   ));
 }
@@ -42,7 +46,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: SplashPage(),
     );
   }
 }

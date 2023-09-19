@@ -2,6 +2,7 @@ import 'package:expense_131/app_widgets/app_rounded_button.dart';
 import 'package:expense_131/bloc/expense_bloc.dart';
 import 'package:expense_131/constants/app_constants.dart';
 import 'package:expense_131/models/expense_model.dart';
+import 'package:expense_131/user_prefs/user_preferences.dart';
 import 'package:expense_131/utils/my_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -119,10 +120,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   }),
               hSpacer(),
               AppRoundedButton(
-                  onTap: () {
+                  onTap: () async{
                     context.read<ExpenseBloc>().add(AddExpenseEvent(
                         newExpense: ExpenseModel(
-                            u_id: 1,
+                            u_id: await UserPreferences().getUID(),
                             exp_title: titleController.text.toString(),
                             exp_desc: descController.text.toString(),
                             exp_amt: double.parse(amtController.text.toString()),

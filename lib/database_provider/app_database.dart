@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:expense_131/models/expense_model.dart';
 import 'package:expense_131/models/user_model.dart';
+import 'package:expense_131/user_prefs/user_preferences.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,7 @@ class AppDataBase {
   static final EXPENSE_TABLE = "expense";
 
   static const EXPENSE_COLUMN_ID = "exp_id";
+
   //static const USER_COLUMN_ID = "uid";
   static const EXPENSE_COLUMN_TITLE = "exp_title";
   static const EXPENSE_COLUMN_DESC = "exp_desc";
@@ -28,8 +30,6 @@ class AppDataBase {
   static const EXPENSE_COLUMN_TYPE = "exp_type"; //0 -> debit & 1 -> Credit
   static const EXPENSE_COLUMN_CAT_ID = "exp_cat_id";
   static const EXPENSE_COLUMN_TIME = "exp_time";
-
-
 
   //user
   static const USER_TABLE = "user";
@@ -90,49 +90,43 @@ class AppDataBase {
   Future<bool> authenticateUser(String email, String pass) async {
     var db = await getDB();
 
-    List<Map<String,dynamic>> data = await db.query(USER_TABLE,
+    List<Map<String, dynamic>> data = await db.query(USER_TABLE,
         where: "$USER_COLUMN_EMAIL = ? and $USER_COLUMN_PASS = ?",
         whereArgs: [email, pass]);
 
-    if(data.isNotEmpty) {
-      //shared pref
-      // set uid
-
+    if (data.isNotEmpty) {
+      UserPreferences().setUID(data[0][USER_COLUMN_ID]);
     }
     return data.isNotEmpty;
   }
 
   /// Expense Table operations
 
-  Future<bool> addExpense(ExpenseModel newExpense) async{
+  Future<bool> addExpense(ExpenseModel newExpense) async {
     var db = await getDB();
 
     int check = await db.insert(EXPENSE_TABLE, newExpense.toMap());
 
-    return check>0;
+    return check > 0;
   }
 
-  Future<List<ExpenseModel>> getAllExpensesOfUser() async{
+  Future<List<ExpenseModel>> getAllExpensesOfUser() async {
     var db = await getDB();
 
     //get uid via shared pref
     // get uid
 
-   /* var pref = await SharedPreferences.getInstance();
-    int? uid = pref.getInt("uid");*/
+    int uid = await UserPreferences().getUID();
 
-    int uid = 1;
-
-
-    List<Map<String, dynamic>> data = await db.query(EXPENSE_TABLE, where: "$USER_COLUMN_ID = ?", whereArgs: ["$uid"]);
+    List<Map<String, dynamic>> data = await db.query(EXPENSE_TABLE,
+        where: "$USER_COLUMN_ID = ?", whereArgs: ["$uid"]);
 
     List<ExpenseModel> listExpenses = [];
 
-    for(Map<String, dynamic> eachExpense in data){
+    for (Map<String, dynamic> eachExpense in data) {
       listExpenses.add(ExpenseModel.fromMap(eachExpense));
     }
 
     return listExpenses;
   }
-
 }

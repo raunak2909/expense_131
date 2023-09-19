@@ -1,6 +1,8 @@
 import 'package:expense_131/constants/app_constants.dart';
 import 'package:expense_131/models/filtered_expense_model.dart';
 import 'package:expense_131/screens/add_trans/add_transaction_page.dart';
+import 'package:expense_131/screens/user_onboarding/login_page.dart';
+import 'package:expense_131/user_prefs/user_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -123,7 +125,44 @@ class _HomePageState extends State<HomePage> {
         builder: (_, state) {
           if (state is ExpenseLoaded) {
             filterExpensesByDate(state.listExpenses);
-            return SfCartesianChart(
+            return ListView.builder(
+                itemCount: arrDateWiseExpenses.length,
+                itemBuilder: (_, index) {
+                  var currItem = arrDateWiseExpenses[index];
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('${currItem.dateName}'),
+                          Text('${currItem.totalAmt}')
+                        ],
+                      ),
+
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: currItem.arrExpenses.length,
+                        itemBuilder: (_, childIndex){
+
+                          var currExp = currItem.arrExpenses[childIndex];
+                          var imgPath = "";
+                          imgPath = AppConstants.categories.firstWhere((element) =>
+                          element['id'] == currExp.expe_cat_id)['img'];
+
+
+                          return ListTile(
+                            leading: Image.asset(imgPath),
+                            title: Text(currExp.exp_title),
+                            subtitle: Text(currExp.exp_desc),
+                            trailing: Text('${currExp.exp_amt}'),
+                          );
+                        },
+                      )
+                    ],
+                  );
+                });
+            /*return SfCartesianChart(
               primaryXAxis: CategoryAxis(),
               primaryYAxis: NumericAxis(minimum: 0, maximum: maxAmt.toDouble(), interval: 1000),
               series: <ChartSeries<FilteredExpenseModel, String>>[
@@ -135,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                     yValueMapper: (FilteredExpenseModel data, _) => data.totalAmt.toDouble()
                 )
               ],
-            );
+            );*/
           } else if (state is ExpenseLoading) {
             return Center(
               child: CircularProgressIndicator(),
@@ -144,15 +183,31 @@ class _HomePageState extends State<HomePage> {
           return Container();
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddTransactionPage(),
-              ));
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              UserPreferences().setUID(0);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ));
+            },
+            child: Icon(Icons.logout),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddTransactionPage(),
+                  ));
+            },
+            child: Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

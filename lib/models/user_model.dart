@@ -26,6 +26,6 @@ class UserModel {
         AppDataBase.USER_COLUMN_EMAIL: email,
         AppDataBase.USER_COLUMN_MOB_NO: mobno,
         AppDataBase.USER_COLUMN_PASS: pass,
-        AppDataBase.USER_COLUMN_MOB_NO: gender,
+        AppDataBase.USER_COLUMN_GENDER: gender,
       };
 }
